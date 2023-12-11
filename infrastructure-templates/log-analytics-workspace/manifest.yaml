@@ -1,0 +1,19 @@
+name: Log Analytics Workspace
+version: 1.0.0
+summary: Creates a Log Analytics Workspace.
+description: Creates a Log Analytics Workspace within a given resource group and a provided Azure Location.
+runner: ARM
+templatePath: log-analytics-workspace.bicep
+parameters:
+- id: "location"
+  name: "location"
+  description: "Location to deploy the log analytics workspace"
+  default: "[resourceGroup().location]"
+  type: "string"
+  required: false
+- id: "logAnalyticsName"
+  name: "logAnalyticsName"
+  description: "Name of Log Analytics Workspace"
+  default: ""
+  type: "string"
+  required: true
