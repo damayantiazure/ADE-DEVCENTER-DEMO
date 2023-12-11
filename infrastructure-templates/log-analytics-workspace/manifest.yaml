@@ -1,4 +1,4 @@
-name: Log Analytics Workspace
+name: LogAnalyticsWorkspace
 version: 1.0.0
 summary: Creates a Log Analytics Workspace.
 description: Creates a Log Analytics Workspace within a given resource group and a provided Azure Location.
