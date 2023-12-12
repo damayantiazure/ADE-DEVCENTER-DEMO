@@ -57,6 +57,7 @@ jobs:
               subprocess.run([az, 'bicep', 'build', '--file', moduleSpec / 'main.bicep', '--outfile', moduleSpec / 'azuredeploy.json'])
           print('Generated ARM templates')
       - name: Commit changes
+        if: steps.filter.outputs.biceps == 'true'
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"

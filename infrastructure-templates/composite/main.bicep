@@ -10,7 +10,6 @@ module loganalytics '../log-analytics-workspace/main.bicep' = {
     location: location
   }
 }
-
 module keyvault '../key-vault/main.bicep' = {
   name: keyVaultName
   params: {
