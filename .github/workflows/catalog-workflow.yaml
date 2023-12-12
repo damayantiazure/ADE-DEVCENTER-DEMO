@@ -1,22 +1,33 @@
-name: Compiles Bicep files to ARM templates
+name: OnDemand-Deployment
+on: [push, workflow_dispatch]
 
-on:
-  push:
-    branches: [DISABLED]
-    paths:      
-      - 'infrastructure-templates/**/*.bicep'
+permissions:
+      id-token: write
+      contents: read
+    
+env:
+  AZURE_RESOURCE_GROUP: ADE-DEC-2023
+  AZURE_LOCATION: westeurope
+  AZURE_ADE_CATALOG_NAME: ade-curated-templates
+  AZURE_ADE_NAME: OrtimDeveloperCenter
 
 jobs:
-  build:
+  Generate-ARM:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
-
+    outputs:
+      bicepChanged: ${{ steps.filter.outputs.biceps }}      
     steps:
       - uses: actions/checkout@v3
-
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            biceps:
+              - 'infrastructure-templates/**/*.bicep'
       - name: Compile Bicep files
+        if: steps.filter.outputs.biceps == 'true'
         shell: python
         run: |
           import os
@@ -44,12 +55,36 @@ jobs:
           for moduleSpec in modules:
               print(f'Compiling Bicep: {moduleSpec}')              
               subprocess.run([az, 'bicep', 'build', '--file', moduleSpec / 'main.bicep', '--outfile', moduleSpec / 'azuredeploy.json'])
-
-          print('Done')
-
+          print('Generated ARM templates')
       - name: Commit changes
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git commit -am "Generated ARM templates"
           git push
+
+  Sync-Catalog: 
+    needs: Generate-ARM
+    runs-on: ubuntu-latest
+    if: needs.Generate-ARM.outputs.bicepChanged == 'true'
+    steps:
+      - uses: actions/checkout@v2
+      - name: OIDC Login to Azure 
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+          enable-AzPSSession: false
+      - name: Synchronize-Catalogs
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.51.0
+          inlineScript: |
+            az extension add --name devcenter
+            az devcenter admin catalog sync \
+                --name ${{ env.AZURE_ADE_CATALOG_NAME }} \
+                --dev-center-name ${{ env.AZURE_ADE_NAME }} \
+                --resource-group ${{ env.AZURE_RESOURCE_GROUP }} 
+      - name: Azure logout
+        run: az logout
