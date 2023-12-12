@@ -5,6 +5,7 @@ param keyVaultName string
 param location string = resourceGroup().location
 
 // Adding a comment to test the pipeline
+// Adding another comment to test the pipeline
 module loganalytics '../log-analytics-workspace/main.bicep' = {
   name: logAnalyticsName
   params: {

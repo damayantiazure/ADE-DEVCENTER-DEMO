@@ -60,7 +60,7 @@ jobs:
   Sync-Catalog: 
     needs: Generate-ARM
     runs-on: ubuntu-latest
-    if: needs.paths-filter.outputs.bicepChanged == 'true'
+    if: needs.filter.outputs.bicepChanged == 'true'
     steps:      
       - uses: actions/checkout@v2
       - name: OIDC Login to Azure 
