@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "14628538127941597922"
+      "templateHash": "283181018697255399"
     }
   },
   "parameters": {
@@ -27,7 +27,7 @@
       "name": "[parameters('logAnalyticsName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "retentionInDays": 30,
+        "retentionInDays": 60,
         "features": {
           "searchVersion": 1
         },
