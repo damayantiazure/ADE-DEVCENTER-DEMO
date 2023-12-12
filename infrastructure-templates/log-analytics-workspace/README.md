@@ -20,5 +20,4 @@ az devcenter dev environment create --dev-center-name  NebulaDevCenter --project
 - environment-name: The name of the environment - this is the name of the environment that will be created. This is also the suffix that gets created as new resource group.
 - environment-type: The type of the environment - this is the type of the environment that will be created. 
 - user-id: The user id of the user that will be the owner of the environment.
-- parameters: The parameters that will be passed to the template. This is a JSON string that contains the parameters that will be passed to the template. The parameters are defined in the template.json file. 
-
+- parameters: The parameters that will be passed to the template. This is a JSON string that contains the parameters that will be passed to the template. The parameters are defined in the template.json file.
