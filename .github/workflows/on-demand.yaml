@@ -27,13 +27,11 @@ env:
   AZURE_ADE_NAME: OrtimDeveloperCenter
 
 jobs:
-  sync-catalog: 
+  Sync-Catalog: 
     #needs: build-container-images   
     runs-on: ubuntu-latest    
     steps:      
       - uses: actions/checkout@v2
-      - uses: tenhaus/get-release-or-tag@v2
-        id: tag
       - name: OIDC Login to Azure 
         uses: azure/login@v1
         with:
@@ -44,8 +42,9 @@ jobs:
       - name: Synchronize-Catalogs
         uses: azure/CLI@v1
         with:
-          azcliversion: 2.30.0
+          azcliversion: 2.51.0
           inlineScript: |
+            az extension add --name devcenter
             az devcenter admin catalog sync \
                 --name ${{ env.AZURE_ADE_CATALOG_NAME }} \
                 --dev-center-name ${{ env.AZURE_ADE_NAME }} \
