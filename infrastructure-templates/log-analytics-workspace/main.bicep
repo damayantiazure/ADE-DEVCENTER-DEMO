@@ -6,7 +6,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsName
   location: location
   properties: any({
-    retentionInDays: 30
+    retentionInDays: 60
     features: {
       searchVersion: 1
     }
