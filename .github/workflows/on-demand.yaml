@@ -21,8 +21,10 @@ permissions:
       contents: read
     
 env:
-  AZURE_RESOURCE_GROUP: xeniel
-  AZURE_LOCATION: westeurope  
+  AZURE_RESOURCE_GROUP: ADE-DEC-2023
+  AZURE_LOCATION: westeurope
+  AZURE_ADE_CATALOG_NAME: ade-curated-templates
+  AZURE_ADE_NAME: OrtimDeveloperCenter
 
 jobs:
   sync-catalog: 
@@ -44,6 +46,9 @@ jobs:
         with:
           azcliversion: 2.30.0
           inlineScript: |
-            az account show
+            az devcenter admin catalog sync \
+                --name ${{ env.AZURE_ADE_CATALOG_NAME }} \
+                --dev-center-name ${{ env.AZURE_ADE_NAME }} \
+                --resource-group ${{ env.AZURE_RESOURCE_GROUP }} 
       - name: Azure logout
         run: az logout
