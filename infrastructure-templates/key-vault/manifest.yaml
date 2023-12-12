@@ -1,0 +1,19 @@
+name: KeyVault
+version: 1.0.0
+summary: Creates a KeyVault.
+description: Creates a KeyVault.
+runner: ARM
+templatePath: azuredeploy.json
+parameters:
+- id: "location"
+  name: "location"
+  description: "Location to deploy the KeyVault"
+  default: "[resourceGroup().location]"
+  type: "string"
+  required: false
+- id: "keyVaultName"
+  name: "keyVaultName"
+  description: "Name of the KeyVault"
+  default: ""
+  type: "string"
+  required: true
