@@ -1,20 +1,5 @@
 name: OnDemand-Deployment
-on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-        type: choice
-        options:
-        - info
-        - warning
-        - debug
-  # push:
-  #   branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
+on: [push, workflow_dispatch]
 
 permissions:
       id-token: write
@@ -27,9 +12,55 @@ env:
   AZURE_ADE_NAME: OrtimDeveloperCenter
 
 jobs:
+  Generate-ARM:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      bicepChanged: ${{ steps.filter.outputs.biceps }}      
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            biceps:
+              - 'infrastructure-templates/**/*.bicep'
+      - name: Compile Bicep files
+        if: steps.filter.outputs.biceps == 'true'
+        shell: python
+        run: |
+          import os
+          import shutil
+          import subprocess
+
+          git = shutil.which('git')
+          az = shutil.which('az')
+
+          from pathlib import Path
+          templates_path = Path.cwd() / 'infrastructure-templates'
+          modules = []
+
+          print('Compiling bicep files...')          
+          for dirpath, dirnames, files in os.walk(templates_path):              
+              if not templates_path.samefile(dirpath) and Path(dirpath).parent.samefile(templates_path):
+                  modules.append(Path(dirpath))
+
+          for moduleSpec in modules:
+              print(f'Check if exists: {moduleSpec}/azuredeploy.json')
+              if not (moduleSpec / 'azuredeploy.json').exists():                  
+                  (moduleSpec / 'azuredeploy.json').touch()                  
+                  subprocess.run([git, 'add', moduleSpec / 'azuredeploy.json'])
+
+          for moduleSpec in modules:
+              print(f'Compiling Bicep: {moduleSpec}')              
+              subprocess.run([az, 'bicep', 'build', '--file', moduleSpec / 'main.bicep', '--outfile', moduleSpec / 'azuredeploy.json'])
+          print('Generated ARM templates')
+
   Sync-Catalog: 
-    #needs: build-container-images   
-    runs-on: ubuntu-latest    
+    needs: Generate-ARM
+    runs-on: ubuntu-latest
+    if: needs.paths-filter.outputs.bicepChanged == 'true'
     steps:      
       - uses: actions/checkout@v2
       - name: OIDC Login to Azure 
