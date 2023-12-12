@@ -1,0 +1,25 @@
+name: CompositeInfra
+version: 1.0.0
+summary: Creates a KeyVault and a log analytics.
+description: Creates a KeyVault and a log analytics.
+runner: ARM
+templatePath: azuredeploy.json
+parameters:
+- id: "location"
+  name: "location"
+  description: "Location to deploy the KeyVault"
+  default: "[resourceGroup().location]"
+  type: "string"
+  required: false
+- id: "keyVaultName"
+  name: "keyVaultName"
+  description: "Name of the KeyVault"
+  default: ""
+  type: "string"
+  required: true
+- id: "logAnalyticsName"
+  name: "logAnalyticsName"
+  description: "Name of Log Analytics Workspace"
+  default: ""
+  type: "string"
+  required: true
