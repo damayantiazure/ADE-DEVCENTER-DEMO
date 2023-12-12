@@ -1,0 +1,353 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "13614663547028613869"
+    }
+  },
+  "parameters": {
+    "webappName": {
+      "type": "string",
+      "metadata": {
+        "description": "Create a new web app on Linux"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location where the server farm will be created."
+      }
+    }
+  },
+  "variables": {
+    "hostingPlanName": "[format('{0}-plan', parameters('webappName'))]",
+    "logAnalyticsName": "[format('{0}-la', parameters('webappName'))]",
+    "appInsightName": "[format('{0}-appinsight', parameters('webappName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('logAnalyticsName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "logAnalyticsName": {
+            "value": "[variables('logAnalyticsName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "283181018697255399"
+            }
+          },
+          "parameters": {
+            "logAnalyticsName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the log analytics workspace"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2022-10-01",
+              "name": "[parameters('logAnalyticsName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "retentionInDays": 60,
+                "features": {
+                  "searchVersion": 1
+                },
+                "sku": {
+                  "name": "PerGB2018"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "laWorkspaceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('appInsightName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appInsightName": {
+            "value": "[variables('appInsightName')]"
+          },
+          "laWorkspaceId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', variables('logAnalyticsName')), '2022-09-01').outputs.laWorkspaceId.value]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "12625140109687334285"
+            }
+          },
+          "parameters": {
+            "appInsightName": {
+              "type": "string",
+              "metadata": {
+                "description": "Application Insights name"
+              }
+            },
+            "laWorkspaceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Log Analytics workspace id"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location of the resource"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/components",
+              "apiVersion": "2020-02-02",
+              "name": "[parameters('appInsightName')]",
+              "location": "[parameters('location')]",
+              "kind": "web",
+              "properties": {
+                "Application_Type": "web",
+                "WorkspaceResourceId": "[parameters('laWorkspaceId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "InstrumentationKey": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightName')), '2020-02-02').InstrumentationKey]"
+            },
+            "ConnectionString": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightName')), '2020-02-02').ConnectionString]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', variables('logAnalyticsName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('hostingPlanName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "hostingPlanName": {
+            "value": "[variables('hostingPlanName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "715318204250802651"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "The location where the server farm will be created."
+              }
+            },
+            "hostingPlanName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the server farm."
+              }
+            }
+          },
+          "variables": {
+            "resourceTags": {
+              "Kind": "Managed-Service"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/serverfarms",
+              "apiVersion": "2020-06-01",
+              "name": "[parameters('hostingPlanName')]",
+              "location": "[parameters('location')]",
+              "kind": "linux",
+              "tags": "[variables('resourceTags')]",
+              "sku": {
+                "tier": "Free",
+                "name": "F1"
+              },
+              "properties": {
+                "reserved": true,
+                "targetWorkerCount": 1
+              }
+            }
+          ],
+          "outputs": {
+            "hostingPlanId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('webappName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "webappName": {
+            "value": "[parameters('webappName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "instrumentationKey": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', variables('appInsightName')), '2022-09-01').outputs.InstrumentationKey.value]"
+          },
+          "serverFarmId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', variables('hostingPlanName')), '2022-09-01').outputs.hostingPlanId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "4288903171416539514"
+            }
+          },
+          "parameters": {
+            "webappName": {
+              "type": "string",
+              "metadata": {
+                "description": "Create a new web app on Linux"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "The location of the web app. Defaults to the resource group location."
+              }
+            },
+            "serverFarmId": {
+              "type": "string",
+              "metadata": {
+                "description": "The id of the service plan to use for the web app."
+              }
+            },
+            "instrumentationKey": {
+              "type": "string",
+              "metadata": {
+                "description": "The instrumentation key of the application insight."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2016-08-01",
+              "name": "[parameters('webappName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "httpsOnly": true,
+                "clientAffinityEnabled": false,
+                "serverFarmId": "[parameters('serverFarmId')]",
+                "siteConfig": {
+                  "linuxFxVersion": "DOCKER|nginx:alpine",
+                  "appSettings": [
+                    {
+                      "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+                      "value": "false"
+                    },
+                    {
+                      "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                      "value": "[parameters('instrumentationKey')]"
+                    },
+                    {
+                      "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+                      "value": "~2"
+                    },
+                    {
+                      "name": "XDT_MicrosoftApplicationInsights_Mode",
+                      "value": "default"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', variables('appInsightName'))]",
+        "[resourceId('Microsoft.Resources/deployments', variables('hostingPlanName'))]"
+      ]
+    }
+  ]
+}

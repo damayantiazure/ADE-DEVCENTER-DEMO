@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "4288903171416539514"
+    }
+  },
+  "parameters": {
+    "webappName": {
+      "type": "string",
+      "metadata": {
+        "description": "Create a new web app on Linux"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location of the web app. Defaults to the resource group location."
+      }
+    },
+    "serverFarmId": {
+      "type": "string",
+      "metadata": {
+        "description": "The id of the service plan to use for the web app."
+      }
+    },
+    "instrumentationKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The instrumentation key of the application insight."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2016-08-01",
+      "name": "[parameters('webappName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "httpsOnly": true,
+        "clientAffinityEnabled": false,
+        "serverFarmId": "[parameters('serverFarmId')]",
+        "siteConfig": {
+          "linuxFxVersion": "DOCKER|nginx:alpine",
+          "appSettings": [
+            {
+              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+              "value": "false"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[parameters('instrumentationKey')]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~2"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "default"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
