@@ -60,9 +60,14 @@ jobs:
   Sync-Catalog: 
     needs: Generate-ARM
     runs-on: ubuntu-latest
-    if: needs.filter.outputs.bicepChanged == 'true'
-    steps:      
+    #if: needs.filter.outputs.bicepChanged == 'true'
+    steps:
       - uses: actions/checkout@v2
+      # add a task to print the output of the previous job
+      - name: Print the output of the Generate-ARM job
+        run: echo "The output was ${{ needs.Generate-ARM.outputs.bicepChanged }}"
+
+
       - name: OIDC Login to Azure 
         uses: azure/login@v1
         with:
