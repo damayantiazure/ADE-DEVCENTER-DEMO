@@ -15,6 +15,4 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
     }
   })
 }
-
-
 output laWorkspaceId string = logAnalytics.id
