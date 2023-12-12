@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       # only run if bicep files changed
-      - 'Environminfrastructure-templatesents/**/*.bicep'
+      - 'infrastructure-templates/**/*.bicep'
 
 jobs:
   build:
