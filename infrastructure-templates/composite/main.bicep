@@ -1,12 +1,10 @@
-
 @description('The name of the log analytics workspace')
 param logAnalyticsName string
-
 @description('Specifies the name of the key vault.')
 param keyVaultName string
-
 param location string = resourceGroup().location
 
+// Adding a comment to test the pipeline
 module loganalytics '../log-analytics-workspace/main.bicep' = {
   name: logAnalyticsName
   params: {
