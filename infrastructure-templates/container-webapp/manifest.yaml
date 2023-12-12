@@ -1,0 +1,19 @@
+name: WebAppOnContainer
+version: 1.0.0
+summary: Create a web app that runs linux container
+description: Create a web app that runs linux container, it also creates app insights and log analytics workspace
+runner: ARM
+templatePath: azuredeploy.json
+parameters:
+- id: "location"
+  name: "location"
+  description: "Location to deploy the KeyVault"
+  default: "[resourceGroup().location]"
+  type: "string"
+  required: false
+- id: "webappName"
+  name: "webappName"
+  description: "Name of the web app"
+  default: ""
+  type: "string"
+  required: true
