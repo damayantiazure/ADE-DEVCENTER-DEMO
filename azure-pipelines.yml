@@ -12,12 +12,12 @@ variables:
   #- group: ade-variables
   AZURE_RESOURCE_GROUP: "my-dev-center-rg"
   AZURE_LOCATION: "westeurope"
-  AZURE_CATALOG: "abncatalog"
+  AZURE_CATALOG: "abn"
   AZURE_ADE_NAME: "abndevcenter-dev-center"
   ENVIRONMENT_TYPE: "Dev"
   ENVIRONMENT_NAME: "frontend-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "projectfrontend"
-  Environment_Definition_Name: "FunctionApp"
+  Environment_Definition_Name: "app-service"
   
 
 stages:
