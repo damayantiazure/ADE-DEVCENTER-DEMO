@@ -60,7 +60,7 @@ stages:
                       --name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) \
                       --dev-center $(AZURE_ADE_NAME) --project $(AZURE_PROJECT) \
                       --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) \
-                      --parameters '{ "name": "${{ env.ENVIRONMENT_NAME }}" }' --only-show-errors \
+                      --parameters '{ "name": "$(ENVIRONMENT_NAME)" }' --only-show-errors \
                       --query resourceGroupId --output tsv 2>&1)
           
                   if [ $? -ne 0 ]; then
