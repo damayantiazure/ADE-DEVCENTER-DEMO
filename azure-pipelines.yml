@@ -64,8 +64,8 @@ stages:
         targetType: 'inline'
         script: |
           git checkout -b main
-          git config --global user.name "Damayanti Bhuyan"
-          git config --global user.email "dbhuyan@microsoft.com"
+          git config --global user.name "Admin"
+          git config --global user.email "admin@MngEnv877982.onmicrosoft.com"
           git commit -am "Generated ARM templates"
           git push --set-upstream origin main 
 
