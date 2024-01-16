@@ -33,14 +33,13 @@ stages:
         targetType: 'inline'
         script: 'az extension add --name devcenter --upgrade'
     - task: AzureCLI@2
+      displayName: Create Environment
       inputs:
         azureSubscription: 'masterconnection'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          az devcenter dev environment create \
-           --name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) \
-           --dev-center $(AZURE_DEVCENTER) --project $(AZURE_PROJECT) \
+          az devcenter dev environment create --dev-center $(AZURE_DEVCENTER) --environment-name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) --project $(AZURE_PROJECT) \
            --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) \
            --parameters '{ "name": "$(ENVIRONMENT_NAME)" }' --only-show-errors
     
