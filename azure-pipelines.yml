@@ -59,8 +59,7 @@ stages:
           print('Generated ARM templates')
 
   - job: committorepo
-    dependsOn: GenerateARM
-    condition: passed()
+    dependsOn: GenerateARM    
     steps:
              
     - task: Bash@3
