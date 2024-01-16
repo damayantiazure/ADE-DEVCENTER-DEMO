@@ -40,7 +40,7 @@ stages:
           az = shutil.which('az')
                     
           from pathlib import Path
-          templates_path = Path.cwd() / 'infrastructure-templates'
+          templates_path = Path.cwd() / 'Environments'
           modules = []
                     
           print('Compiling bicep files...')          
