@@ -32,13 +32,13 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'az extension add --name devcenter --upgrade'
-    - task: AzureCLI@2
-      displayName: Create a catalog
-      inputs:
-        azureSubscription: 'masterconnection'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: 'az devcenter admin catalog create --ado-git path="/Environments" branch="main" secret-identifier="https://abndevcenterkeyvault.vault.azure.net/secrets/adopat" uri="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo" --name "CentralCatalog" --dev-center-name $(AZURE_ADE_NAME) --resource-group $(AZURE_RESOURCE_GROUP)'
+    # - task: AzureCLI@2
+    #   displayName: Create a catalog
+    #   inputs:
+    #     azureSubscription: 'masterconnection'
+    #     scriptType: 'bash'
+    #     scriptLocation: 'inlineScript'
+    #     inlineScript: 'az devcenter admin catalog create --ado-git path="/Environments" branch="main" secret-identifier="https://abndevcenterkeyvault.vault.azure.net/secrets/adopat" uri="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo" --name "CentralCatalog" --dev-center-name $(AZURE_ADE_NAME) --resource-group $(AZURE_RESOURCE_GROUP)'
     - task: AzureCLI@2
       displayName: Create Environment
       inputs:
