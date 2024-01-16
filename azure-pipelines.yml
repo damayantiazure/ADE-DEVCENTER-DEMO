@@ -18,6 +18,7 @@ variables:
   ENVIRONMENT_NAME: "abnfrontend-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "projectfrontend"
   Environment_Definition_Name: "AzureWebApp"
+  AZURE_TENANT_ID: "835f6712-aeca-416a-8b76-d4dad8d12381"
   
 
 stages:
@@ -48,6 +49,26 @@ stages:
         inlineScript: |
           az devcenter dev environment create --dev-center-name $(AZURE_ADE_NAME) --environment-name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) --project $(AZURE_PROJECT) \
            --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) 
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          environment_rg=$(az devcenter dev environment show --name $(ENVIRONMENT_NAME) \
+             --dev-center $(AZURE_ADE_NAME) --project $(AZURE_PROJECT) \
+             --only-show-errors --query resourceGroupId --output tsv 2>&1)
+          
+           if [ $? -ne 0 ]; then
+              echo "::error::az devcenter dev environment show command failed: $environment_rg"; exit 1
+           fi
+          
+          environment_group=${environment_rg##*/}
+          environment_sub=${environment_rg%/resourceGroups*}
+          environment_sub=${environment_sub##*/}
+          
+          echo "ENVIRONMENT_GROUP=$environment_group" >> $ADO_ENV
+          echo "ENVIRONMENT_SUB=$environment_sub" >> $ADO_ENV
+          
+          echo "- [View environment resources in the Azure portal](https://portal.azure.com/#@$(AZURE_TENANT_ID)/resource$environment_rg)" 
          
     
     
