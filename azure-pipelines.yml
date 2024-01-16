@@ -59,6 +59,14 @@ stages:
               print(f'Compiling Bicep: {moduleSpec}')              
               subprocess.run([az, 'bicep', 'build', '--file', moduleSpec / 'main.bicep', '--outfile', moduleSpec / 'azuredeploy.json'])
           print('Generated ARM templates')
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          git config --global user.name "Damayanti Bhuyan"
+          git config --global user.email "dbhuyan@microsoft.com"
+          git commit -am "Generated ARM templates"
+          git push
 
 
     
