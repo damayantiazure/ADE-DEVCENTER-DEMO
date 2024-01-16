@@ -18,7 +18,7 @@ variables:
   AZURE_RESOURCE_GROUP: "my-dev-center-rg"
   AZURE_LOCATION: "westeurope"
   AZURE_CATALOG: "CentralCatalog"
-  AZURE_ADE_NAME: "abndevcenter-dev-center"
+  AZURE_DEVCENTER: "abndevcenter-dev-center"
   ENVIRONMENT_TYPE: "Test"
   ENVIRONMENT_NAME: "abnfrontend-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "projectfrontend"
@@ -48,36 +48,37 @@ stages:
         inlineScript: |
           echo "Getting environment $(ENVIRONMENT_NAME)..."
           environment_rg=$(az devcenter dev environment show --name $(ENVIRONMENT_NAME) \
-              --dev-center $(AZURE_ADE_NAME) --project $(AZURE_PROJECT) \
+              --dev-center $(AZURE_DEVCENTER) --project $(AZURE_PROJECT) \
               --only-show-errors --query resourceGroupId --output tsv 2>&1)
-          
+
           if [ $? -ne 0 ]; then
               # Prod (main) environment may not be created yet
-              if [[ $environment_rg =~ "EnvironmentCannotBeFound" || $environment_rg =~ "EnvironmentNotFound" ]] && [[ "$ENVIRONMENT_TYPE" == "Prod" ]]; then
+              if [[ $environment_rg =~ "EnvironmentCannotBeFound" || $environment_rg =~ "EnvironmentNotFound" ]] && [[ "$ENVIRONMENT_TYPE" == "Production" ]]; then
                   echo "Environment $(ENVIRONMENT_NAME) not found, creating..."
-          
+
                   environment_rg=$(az devcenter dev environment create \
-                      --name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) \
-                      --dev-center $(AZURE_ADE_NAME) --project $(AZURE_PROJECT) \
+                      --name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE)\
+                      --dev-center $(AZURE_DEVCENTER) --project $(AZURE_PROJECT) \
                       --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) \
                       --parameters '{ "name": "$(ENVIRONMENT_NAME)" }' --only-show-errors \
                       --query resourceGroupId --output tsv 2>&1)
-          
+
                   if [ $? -ne 0 ]; then
                       echo "Failed to create environment $(ENVIRONMENT_NAME)"
                       echo "::error::az devcenter dev environment create command failed: $environment_rg"; exit 1
                   fi
-                    else
-                      echo "Failed to get environment $(ENVIRONMENT_NAME)"
-                      echo "::error::az devcenter dev environment show command failed: $environment_rg"; exit 1
-                  fi
+              else
+                  echo "Failed to get environment $(ENVIRONMENT_NAME)"
+                  echo "::error::az devcenter dev environment show command failed: $environment_rg"; exit 1
+              fi
           fi
-          
+
           environment_group=${environment_rg##*/}
           environment_sub=${environment_rg%/resourceGroups*}
           environment_sub=${environment_sub##*/}
-          
-          echo "ENVIRONMENT_GROUP=$environment_group" >> $GITHUB_ENV
-          echo "ENVIRONMENT_SUB=$environment_sub" >> $GITHUB_ENV          
+
+          echo "ENVIRONMENT_GROUP=$environment_group" 
+          echo "ENVIRONMENT_SUB=$environment_sub" 
+
           echo "- [View environment resources in the Azure portal](https://portal.azure.com/#@$(AZURE_TENANT_ID)/resource$environment_rg)" 
     
