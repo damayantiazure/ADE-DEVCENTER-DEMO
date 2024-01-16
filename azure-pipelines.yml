@@ -67,7 +67,7 @@ stages:
           git config --global user.name $(Build.RequestedFor)
           git config --global user.email $(Build.RequestedForEMail)
           git commit -am "Generated ARM templates"
-          git push https://$(System.AccessToken)@dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo --set-upstream origin main 
+          git push https://$(System.AccessToken)@dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo 
 
 
     
