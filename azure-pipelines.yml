@@ -21,8 +21,6 @@ variables:
   AZURE_ADE_CATALOG_NAME: "catalogfrontend"
   AZURE_ADE_NAME: "abndevcenter-dev-center"
 
-
-
 stages:
 - stage: ADE
   jobs:
@@ -59,6 +57,12 @@ stages:
               print(f'Compiling Bicep: {moduleSpec}')              
               subprocess.run([az, 'bicep', 'build', '--file', moduleSpec / 'main.bicep', '--outfile', moduleSpec / 'azuredeploy.json'])
           print('Generated ARM templates')
+
+  - job: committorepo
+    dependsOn: GenerateARM
+    condition: passed()
+    steps:
+             
     - task: Bash@3
       inputs:
         targetType: 'inline'
@@ -69,5 +73,19 @@ stages:
           git commit -am "Generated ARM templates"
           git push https://$(System.AccessToken)@dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo 
 
-
+- stage: SyncADECatalog
+  jobs:
+  - job: SyncADECatalog
+    steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'masterconnection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az extension add --name devcenter
+          az devcenter admin catalog sync \
+           --name $(AZURE_ADE_CATALOG_NAME)) \
+           --dev-center-name $(AZURE_ADE_NAME)) \
+           --resource-group $(AZURE_RESOURCE_GROUP)
     
