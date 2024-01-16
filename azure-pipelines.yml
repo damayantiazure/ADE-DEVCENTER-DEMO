@@ -17,7 +17,7 @@ variables:
   ENVIRONMENT_TYPE: "Dev"
   ENVIRONMENT_NAME: "frontend-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "projectfrontend"
-  Environment_Definition_Name: "Frontend"
+  Environment_Definition_Name: "Environments"
   
 
 stages:
