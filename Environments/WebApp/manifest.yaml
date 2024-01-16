@@ -1,0 +1,6 @@
+name: AzureWebApp
+version: 1.0.0
+summary: Azure App Service 
+description: Deploys an Azure App Service to host your web application.
+runner: ARM
+templatePath: azuredeploy.json
