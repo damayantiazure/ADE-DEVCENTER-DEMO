@@ -12,7 +12,7 @@ variables:
   #- group: ade-variables
   AZURE_RESOURCE_GROUP: "my-dev-center-rg"
   AZURE_LOCATION: "westeurope"
-  AZURE_CATALOG: "adedemo"
+  AZURE_CATALOG: "CentralCatalog"
   AZURE_ADE_NAME: "abndevcenter-dev-center"
   ENVIRONMENT_TYPE: "Dev"
   ENVIRONMENT_NAME: "abnfrontend-$(ENVIRONMENT_TYPE)"
@@ -33,6 +33,7 @@ stages:
         targetType: 'inline'
         script: 'az extension add --name devcenter --upgrade'
     - task: AzureCLI@2
+      displayName: Create a catalog
       inputs:
         azureSubscription: 'masterconnection'
         scriptType: 'bash'
