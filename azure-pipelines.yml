@@ -1,0 +1,29 @@
+trigger:
+  branches:
+   include:
+     - master
+  paths:
+    include:
+      - 'infrastructure-templates/**/*.bicep'
+#- main
+pool:
+  vmImage: ubuntu-latest
+  
+
+variables:
+  #- group: ade-variables
+  AZURE_RESOURCE_GROUP: "my-dev-center-rg"
+  AZURE_LOCATION: "westeurope"
+  AZURE_ADE_CATALOG_NAME: "catalogfrontend"
+  AZURE_ADE_NAME: "abndevcenter-dev-center"
+  ENVIRONMENT_TYPE: "Dev"
+  ENVIRONMENT_NAME: "frontend-$(ENVIRONMENT_TYPE)"
+  
+
+stages:
+- stage: Create Environment
+  jobs:
+  - job: Env_create  
+      
+    steps:
+    
