@@ -49,10 +49,12 @@ stages:
     #     inlineScript: |
     #       az devcenter dev environment create --dev-center-name $(AZURE_ADE_NAME) --environment-name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) --project $(AZURE_PROJECT) \
     #        --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) 
-    - task: Bash@3
+    - task: AzureCLI@2
       inputs:
-        targetType: 'inline'
-        script: |
+        azureSubscription: 'masterconnection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
           environment_rg=$(az devcenter dev environment show --name $(ENVIRONMENT_NAME) \
              --dev-center $(AZURE_ADE_NAME) --project $(AZURE_PROJECT) \
              --only-show-errors --query resourceGroupId --output tsv 2>&1)
@@ -69,6 +71,9 @@ stages:
           echo "ENVIRONMENT_SUB=$environment_sub" >> $ADO_ENV
           
           echo "- [View environment resources in the Azure portal](https://portal.azure.com/#@$(AZURE_TENANT_ID)/resource$environment_rg)" 
+    
+    
+
          
     
     
