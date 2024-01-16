@@ -40,15 +40,15 @@ stages:
     #     scriptType: 'bash'
     #     scriptLocation: 'inlineScript'
     #     inlineScript: 'az devcenter admin catalog create --ado-git path="/Environments" branch="main" secret-identifier="https://abndevcenterkeyvault.vault.azure.net/secrets/adopat" uri="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo" --name "CentralCatalog" --dev-center-name $(AZURE_ADE_NAME) --resource-group $(AZURE_RESOURCE_GROUP)'
-    - task: AzureCLI@2
-      displayName: Create Environment
-      inputs:
-        azureSubscription: 'masterconnection'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-          az devcenter dev environment create --dev-center-name $(AZURE_ADE_NAME) --environment-name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) --project $(AZURE_PROJECT) \
-           --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) 
+    # - task: AzureCLI@2
+    #   displayName: Create Environment
+    #   inputs:
+    #     azureSubscription: 'masterconnection'
+    #     scriptType: 'bash'
+    #     scriptLocation: 'inlineScript'
+    #     inlineScript: |
+    #       az devcenter dev environment create --dev-center-name $(AZURE_ADE_NAME) --environment-name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) --project $(AZURE_PROJECT) \
+    #        --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) 
     - task: Bash@3
       inputs:
         targetType: 'inline'
