@@ -4,16 +4,62 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
-
+  branches:
+   include:
+     - master
+  paths:
+    include:
+      - 'infrastructure-templates/**/*.bicep'
+#- main
 pool:
   vmImage: ubuntu-latest
+  
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  AZURE_RESOURCE_GROUP: "my-dev-center-rg"
+  AZURE_LOCATION: "westeurope"
+  AZURE_ADE_CATALOG_NAME: "catalogfrontend"
+  AZURE_ADE_NAME: "abndevcenter-dev-center"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+
+
+stages:
+- stage: ADE
+  jobs:
+  - job: Generate-ARM  
+      
+    steps:
+    - task: PythonScript@0
+      inputs:
+        scriptSource: 'inline'
+        script: |
+          run: |
+                    import os
+                    import shutil
+                    import subprocess
+          
+                    git = shutil.which('git')
+                    az = shutil.which('az')
+          
+                    from pathlib import Path
+                    templates_path = Path.cwd() / 'infrastructure-templates'
+                    modules = []
+          
+                    print('Compiling bicep files...')          
+                    for dirpath, dirnames, files in os.walk(templates_path):              
+                        if not templates_path.samefile(dirpath) and Path(dirpath).parent.samefile(templates_path):
+                            modules.append(Path(dirpath))
+          
+                    for moduleSpec in modules:
+                        print(f'Check if exists: {moduleSpec}/azuredeploy.json')
+                        if not (moduleSpec / 'azuredeploy.json').exists():                  
+                            (moduleSpec / 'azuredeploy.json').touch()                  
+                            subprocess.run([git, 'add', moduleSpec / 'azuredeploy.json'])
+          
+                    for moduleSpec in modules:
+                        print(f'Compiling Bicep: {moduleSpec}')              
+                        subprocess.run([az, 'bicep', 'build', '--file', moduleSpec / 'main.bicep', '--outfile', moduleSpec / 'azuredeploy.json'])
+                    print('Generated ARM templates')
+
+
+    
