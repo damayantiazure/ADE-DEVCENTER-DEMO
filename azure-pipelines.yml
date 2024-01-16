@@ -84,8 +84,5 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           az extension add --name devcenter
-          az devcenter admin catalog sync \
-           --name $(AZURE_ADE_CATALOG_NAME)) \
-           --dev-center-name $(AZURE_ADE_NAME)) \
-           --resource-group $(AZURE_RESOURCE_GROUP)
+          az devcenter admin catalog sync --name $(AZURE_ADE_CATALOG_NAME)) --dev-center-name $(AZURE_ADE_NAME)) --resource-group $(AZURE_RESOURCE_GROUP)
     
