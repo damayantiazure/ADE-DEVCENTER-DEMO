@@ -16,11 +16,11 @@ pool:
   
 
 variables:
-  - group: ade-variables
-  # AZURE_RESOURCE_GROUP: "my-dev-center-rg"
-  # AZURE_LOCATION: "westeurope"
-  # AZURE_ADE_CATALOG_NAME: "catalogfrontend"
-  # AZURE_ADE_NAME: "abndevcenter-dev-center"
+  #- group: ade-variables
+  AZURE_RESOURCE_GROUP: "my-dev-center-rg"
+  AZURE_LOCATION: "westeurope"
+  AZURE_ADE_CATALOG_NAME: "catalogfrontend"
+  AZURE_ADE_NAME: "abndevcenter-dev-center"
 
 stages:
 - stage: ADE
