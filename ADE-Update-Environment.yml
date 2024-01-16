@@ -27,11 +27,12 @@ variables:
   
 
 stages:
-- stage: Create_Environment
+- stage: UpdateEnvironment
   jobs:
-  - job: create_env  
+  - job: Update_env  
       
     steps:
+    
     # Update devcenter extension
     - task: Bash@3
       displayName: Install DevCenter CLI Extension
