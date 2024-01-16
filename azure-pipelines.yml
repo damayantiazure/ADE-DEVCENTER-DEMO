@@ -17,7 +17,7 @@ variables:
   ENVIRONMENT_TYPE: "Dev"
   ENVIRONMENT_NAME: "abnfrontend-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "projectfrontend"
-  Environment_Definition_Name: "app-service"
+  Environment_Definition_Name: "WebApp"
   
 
 stages:
