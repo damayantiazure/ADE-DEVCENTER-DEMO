@@ -33,33 +33,32 @@ stages:
       inputs:
         scriptSource: 'inline'
         script: |
-          run: |
-                    import os
-                    import shutil
-                    import subprocess
-          
-                    git = shutil.which('git')
-                    az = shutil.which('az')
-          
-                    from pathlib import Path
-                    templates_path = Path.cwd() / 'infrastructure-templates'
-                    modules = []
-          
-                    print('Compiling bicep files...')          
-                    for dirpath, dirnames, files in os.walk(templates_path):              
-                        if not templates_path.samefile(dirpath) and Path(dirpath).parent.samefile(templates_path):
-                            modules.append(Path(dirpath))
-          
-                    for moduleSpec in modules:
-                        print(f'Check if exists: {moduleSpec}/azuredeploy.json')
-                        if not (moduleSpec / 'azuredeploy.json').exists():                  
-                            (moduleSpec / 'azuredeploy.json').touch()                  
-                            subprocess.run([git, 'add', moduleSpec / 'azuredeploy.json'])
-          
-                    for moduleSpec in modules:
-                        print(f'Compiling Bicep: {moduleSpec}')              
-                        subprocess.run([az, 'bicep', 'build', '--file', moduleSpec / 'main.bicep', '--outfile', moduleSpec / 'azuredeploy.json'])
-                    print('Generated ARM templates')
+          import os
+          import shutil
+          import subprocess
+                    
+          git = shutil.which('git')
+          az = shutil.which('az')
+                    
+          from pathlib import Path
+          templates_path = Path.cwd() / 'infrastructure-templates'
+          modules = []
+                    
+          print('Compiling bicep files...')          
+          for dirpath, dirnames, files in os.walk(templates_path):              
+            if not templates_path.samefile(dirpath) and Path(dirpath).parent.samefile(templates_path):
+                modules.append(Path(dirpath))
+                    
+          for moduleSpec in modules:
+              print(f'Check if exists: {moduleSpec}/azuredeploy.json')
+              if not (moduleSpec / 'azuredeploy.json').exists():                  
+                  (moduleSpec / 'azuredeploy.json').touch()                  
+                  subprocess.run([git, 'add', moduleSpec / 'azuredeploy.json'])
+                    
+          for moduleSpec in modules:
+              print(f'Compiling Bicep: {moduleSpec}')              
+              subprocess.run([az, 'bicep', 'build', '--file', moduleSpec / 'main.bicep', '--outfile', moduleSpec / 'azuredeploy.json'])
+          print('Generated ARM templates')
 
 
     
