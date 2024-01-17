@@ -1,5 +1,5 @@
 
-RG="devcenter-rg"
+RG="devcenterdemo-rg"
 
 #Get the deploying users id for RBAC assignments
 DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
