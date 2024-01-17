@@ -1,109 +1,128 @@
-// This template deploys an Azure Storage account, and then configures it to support static website hosting.
-// Enabling static website hosting isn't possible directly in Bicep or an ARM template,
-// so this sample uses a deployment script to enable the feature.
+// param location string = 'westeurope'
+// param location_suffix string = 'demo1'
 
-@description('The location into which the resources should be deployed.')
 param location string = resourceGroup().location
+param vnetNamevar string = 'vnet${uniqueString(resourceGroup().id)}'
+param vnetAdressSpace string = '10.${subnetAddressPrefix}.0.0/16'
+param subnetWebAppName string = 'subnetwebapp${uniqueString(resourceGroup().id)}'
+param subnetWebAppAdressSpace string = '10.${subnetAddressPrefix}.1.0/24'
+param staticwebname string = 'webapp${uniqueString(resourceGroup().id)}'
+param appInsights string = 'appinsight${uniqueString(resourceGroup().id)}'
+param storageaccountname string = 'stg${uniqueString(resourceGroup().id)}'
+param managedIdentityname string = 'mi${uniqueString(resourceGroup().id)}'
+param keyvaultname string = 'kaevault${uniqueString(resourceGroup().id)}'
 
-@description('The name of the storage account to use for site hosting.')
-param storageAccountName string = 'stor${uniqueString(resourceGroup().id)}'
-
-@allowed([
-  'Standard_LRS'
-  'Standard_GRS'
-  'Standard_ZRS'
-  'Premium_LRS'
-])
-@description('The storage account sku name.')
-param storageSku string = 'Standard_LRS'
-
-@description('The path to the web index document.')
-param indexDocumentPath string = 'index.html'
-
-@description('The contents of the web index document.')
-param indexDocumentContents string = '<h1>Example static website</h1>'
-
-@description('The path to the web error document.')
-param errorDocument404Path string = 'error.html'
-
-@description('The contents of the web error document.')
-param errorDocument404Contents string = '<h1>Example 404 error page</h1>'
-
-resource contributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
-  scope: subscription()
-  // This is the Storage Account Contributor role, which is the minimum role permission we can give. See https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#:~:text=17d1049b-9a84-46fb-8f53-869881c3d3ab
-  name: '17d1049b-9a84-46fb-8f53-869881c3d3ab'
+resource vnetName 'Microsoft.Network/virtualNetworks@2020-11-01' = {
+  name: vnetNamevar
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        vnetAdressSpace
+      ]
+    }
+    subnets: [     
+      {
+        name: subnetWebAppName
+        properties: {
+          addressPrefix: subnetWebAppAdressSpace
+          serviceEndpoints: []
+          delegations: []
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+      }
+    ]
+    virtualNetworkPeerings: []
+    enableDdosProtection: false
+  }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
-  name: storageAccountName
+resource vnetName_subnetWebAppName 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
+  parent: vnetName
+  name: subnetWebAppName
+  properties: {
+    addressPrefix: subnetWebAppAdressSpace
+    serviceEndpoints: []
+    delegations: []
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+  }
+}
+
+resource appInsightsComponents 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsights
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+  }
+}
+
+resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
+  name: storageaccountname
   location: location
   kind: 'StorageV2'
   sku: {
-    name: storageSku
+    name: 'Premium_LRS'
   }
 }
+
+resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
+  name: keyvaultname
+  location: location
+  
+  properties: {
+    sku: {
+      name: 'standard'
+      family: 'A'
+    }
+    tenantId: subscription().tenantId
+
+    accessPolicies: []
+    softDeleteRetentionInDays: 7
+  }
+}
+
+
+// resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+//   name: 'name'
+//   properties: {
+//     roleDefinitionId: 'roleDefinitionId'
+//     principalId: 'principalId'
+//     principalType: 'ServicePrincipal'
+//   }
+// }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: 'DeploymentScript'
+  name: managedIdentityname
   location: location
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  scope: storageAccount
-  name: guid(resourceGroup().id, managedIdentity.id, contributorRoleDefinition.id)
-  properties: {
-    roleDefinitionId: contributorRoleDefinition.id
-    principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
+// resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+//   scope: storageAccount
+//   name: guid(resourceGroup().id, managedIdentity.id, contributorRoleDefinition.id)
+//   properties: {
+//     roleDefinitionId: contributorRoleDefinition.id
+//     principalId: managedIdentity.properties.principalId
+//     principalType: 'ServicePrincipal'
+//   }
+// }
 
-resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deploymentScript'
+resource symbolicname 'Microsoft.Web/staticSites@2022-09-01' = {
+  name: staticwebname
   location: location
-  kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
+  sku: {
+    name: 'Free'
+    tier: 'Free'
   }
-  dependsOn: [
-    // we need to ensure we wait for the role assignment to be deployed before trying to access the storage account
-    roleAssignment
-  ]
   properties: {
-    azPowerShellVersion: '3.0'
-    scriptContent: loadTextContent('./scripts/enable-static-website.ps1')
-    retentionInterval: 'PT4H'
-    environmentVariables: [
-      {
-        name: 'ResourceGroupName'
-        value: resourceGroup().name
-      }
-      {
-        name: 'StorageAccountName'
-        value: storageAccount.name
-      }
-      {
-        name: 'IndexDocumentPath'
-        value: indexDocumentPath
-      }
-      {
-        name: 'IndexDocumentContents'
-        value: indexDocumentContents
-      }
-      {
-        name: 'ErrorDocument404Path'
-        value: errorDocument404Path
-      }
-      {
-        name: 'ErrorDocument404Contents'
-        value: errorDocument404Contents
-      }
-    ]
+    repositoryUrl: 'https://dev.azure.com/damayantibhuyan/customerPOCs/_git/StaticWebApp'
+    branch: 'master'
+    stagingEnvironmentPolicy: 'Enabled'
+    allowConfigFileUpdates: true
+    provider: 'DevOps'
+    enterpriseGradeCdnStatus: 'Disabled'
   }
 }
 
-output staticWebsiteUrl string = storageAccount.properties.primaryEndpoints.web
