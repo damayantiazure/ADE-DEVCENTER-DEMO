@@ -18,6 +18,3 @@ DCNAME=$(az deployment group create -g $RG -f ADE-Config/bicep/common.bicep -p n
 PAT = "https://abndevcenterkeyvault.vault.azure.net/secrets/adopat"
 REPO="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo"
 az deployment group create -g $RG -f ADE-Config/bicep/ade.bicep -p devcenterName=$DCNAME catalogRepoUri=$REPO catalogRepoPat=$PAT adeProjectUser=$DEPLOYINGUSERID
-
-
-
