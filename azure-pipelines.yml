@@ -12,11 +12,11 @@ variables:
   #- group: ade-variables
   AZURE_RESOURCE_GROUP: "my-dev-center-rg"
   AZURE_LOCATION: "westeurope"
-  AZURE_CATALOG: "CentralCatalog"
+  AZURE_CATALOG: "CentralAbnCatalog"
   AZURE_ADE_NAME: "abndevcenter-dev-center"
   ENVIRONMENT_TYPE: "Dev"
-  ENVIRONMENT_NAME: "abnfrontend-$(ENVIRONMENT_TYPE)"
-  AZURE_PROJECT: "projectfrontend1"
+  ENVIRONMENT_NAME: "abndc-$(ENVIRONMENT_TYPE)"
+  AZURE_PROJECT: "abndevcenter-project"
   Environment_Definition_Name: "AzureWebApp"
   AZURE_TENANT_ID: "835f6712-aeca-416a-8b76-d4dad8d12381"
   
