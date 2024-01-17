@@ -8,6 +8,7 @@ trigger:
 
 variables:  
   AZURE_RESOURCE_GROUP: "devcenterdemo-rg"
+  Principal_Id: "6e4c3017-00f7-440d-ac5c-695cf98dd060"
   
 
 pool:
@@ -24,5 +25,5 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv) 
-      echo $DEPLOYINGUSERID    
+      DEPLOYINGUSERID=$Principal_Id
+      DCNAME=$(az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/common.bicep -p nameseed=devcenter devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)  
