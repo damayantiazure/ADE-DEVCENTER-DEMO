@@ -1,4 +1,4 @@
-param nameseed string = 'dbox'
+param nameseed string = 'ade'
 param location string = resourceGroup().location
 param projectTeamName string = 'developers'
 
