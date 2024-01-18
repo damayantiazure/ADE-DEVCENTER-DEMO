@@ -45,3 +45,12 @@ steps:
       PAT='https://abndevcenterkeyvault.vault.azure.net/secrets/adopat'
       REPO='https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo'
       az deployment group create -g $RG -f ADE-Config/bicep/ade.bicep -p devcenterName=$DCNAME catalogRepoUri=$REPO catalogRepoPat=$PAT adeProjectUser=$DEPLOYINGUSERID
+      
+      # DEVUSER=user@contoso.com
+      # DEVUSERID=$(az ad user show --id $DEVUSER --query id -o tsv)
+      # SUBID=$(az account show --query id -o tsv)
+      # PROJECTNAME=developers
+      # PROJECTID=/subscriptions/$SUBID/resourceGroups/$RG/providers/Microsoft.DevCenter/projects/$PROJECTNAME
+
+      #Dev box
+      # az role assignment create --assignee $DEVUSER --role "DevCenter Dev Box User" --scope $PROJECTID
