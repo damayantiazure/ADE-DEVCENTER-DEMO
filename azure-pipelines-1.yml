@@ -8,14 +8,14 @@ trigger:
 
 variables:  
   - group: ade-variables
+  - group: adekays
  
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+
 
 - task: AzureCLI@2
   displayName: Configure Dev Center and its components
@@ -25,20 +25,17 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       
-           
+      adopat='tayuxqjfutu7fbv36isg3saohqhlvu6joxrbuco3wwemjwzwxqua'
+      
       #Get the deploying users id for RBAC assignments
       #DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
       DEPLOYINGUSERID='6e4c3017-00f7-440d-ac5c-695cf98dd060'
-      AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)   
-
-      DEV-CENTER='dc-devbox020'
-      AZURE_KEYVAULT='devboxkeyvault64356'
-      AZURE_RESOURCE_GROUP='dev-rg'    
-      pat='tayuxqjfutu7fbv36isg3saohqhlvu6joxrbuco3wwemjwzwxqua'    
-     
+      AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+      AZURE_KEYVAULT='devcenterkv633788'
+      DCNAME='dc-devbox020'
+      
       # Assign ADE access on the subcription
-      AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DCNAME --query [*].identity.principalId --out tsv)
-          
+      AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DCNAME --query [*].identity.principalId --out tsv)          
       az role assignment create \
         --scope /subscriptions/$AZURE_SUBSCRIPTION_ID \
         --role Owner \
@@ -71,13 +68,13 @@ steps:
       az keyvault secret set 
         --name pat \
         --vault-name $AZURE_KEYVAULT \
-        --value $pat  
+        --value $adopat  
 
       #Add the catalog to your dev center  
       az devcenter admin catalog create \
         --name Environments \
         --resource-group $AZURE_RESOURCE_GROUP \
-        --dev-center $DEV-CENTER\
+        --dev-center $DCNAME\
         --ado-git path="/Environments" branch="main" secret-identifier="https://$(AZURE_KEYVAULT).vault.azure.net/secrets/pat" uri="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo"   
   
 
