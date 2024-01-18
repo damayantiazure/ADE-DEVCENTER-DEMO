@@ -23,7 +23,7 @@ variables:
   ENVIRONMENT_NAME: "abnfrontend-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "projectfrontend"
   Environment_Definition_Name: "AzureWebApp"
-  AZURE_TENANT_ID: "835f6712-aeca-416a-8b76-d4dad8d12381"
+
   
 
 stages:
@@ -48,6 +48,7 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           echo "Getting environment $(ENVIRONMENT_NAME)..."
+          AZURE_TENANT_ID=$(az account show --query tenantId --output tsv)
           environment_rg=$(az devcenter dev environment show --name $(ENVIRONMENT_NAME) \
               --dev-center $(AZURE_DEVCENTER) --project $(AZURE_PROJECT) \
               --only-show-errors --query resourceGroupId --output tsv 2>&1)
