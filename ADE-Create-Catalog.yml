@@ -31,6 +31,7 @@ stages:
         targetType: 'inline'
         script: 'az extension add --name devcenter --upgrade'
     - task: AzureCLI@2
+      displayName: Give access for the ADE on Subscription
       inputs:
         azureSubscription: 'masterconnection'
         scriptType: 'bash'
