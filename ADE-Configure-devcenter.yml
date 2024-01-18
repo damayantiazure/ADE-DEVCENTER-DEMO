@@ -34,7 +34,7 @@ steps:
       az group create -n $RG -l westeurope
       
       #Deploy the common infrastructure
-      DCNAME=$(az deployment group create -g $RG -f ADE-Config/bicep/common.bicep -p nameseed=devbox003 devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
+      DCNAME=$(az deployment group create -g $RG -f ADE-Config/bicep/common.bicep -p nameseed=devbox004 devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
       
           
       #Configure and Deploy Microsoft Dev Box Infrastructure      
