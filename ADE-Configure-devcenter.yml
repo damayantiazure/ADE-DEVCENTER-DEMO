@@ -7,7 +7,8 @@ trigger:
 - master
 
 variables:  
-  - group: ade-variables  
+  - group: ade-variables
+ 
 
 pool:
   vmImage: ubuntu-latest
@@ -51,7 +52,36 @@ steps:
         --role Owner \
         --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
         --assignee-principal-type ServicePrincipal
-      
+
+      # create a new key vault. You use this key vault later to save a personal access token from Devops/github.
+      az keyvault create \
+        --name $AZURE_KEYVAULT \
+        --resource-group $AZURE_RESOURCE_GROUP \
+        --location $LOCATION \
+        --enable-rbac-authorization true
+
+      # Give yourself the Key Vault Administrator role on the new key vault.      
+      AZURE_KEYVAULT_ID="/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$($AZURE_RESOURCE_GROUP)/providers/Microsoft.KeyVault/vaults/$(AZURE_KEYVAULT)"  
+      az role assignment create \
+        --scope $AZURE_KEYVAULT_ID \
+        --role "Key Vault Administrator" \
+        --assignee-object-id $DEPLOYINGUSERID \
+        --assignee-principal-type ServicePrincipal
+
+      # Assign the dev center's identity the role of Key Vault Secrets User.  
+      az role assignment create \
+        --scope $AZURE_KEYVAULT_ID \
+        --role "Key Vault Secrets User" \
+        --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
+        --assignee-principal-type ServicePrincipal  
+
+      # personal access token as a key vault secret named pat
+      az keyvault secret set 
+        --name pat \
+        --vault-name $AZURE_KEYVAULT 
+        --value $pat  
+
+
       # DEVUSER=user@contoso.com
       # DEVUSERID=$(az ad user show --id $DEVUSER --query id -o tsv)
       # SUBID=$(az account show --query id -o tsv)
