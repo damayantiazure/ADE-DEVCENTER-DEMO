@@ -78,7 +78,7 @@ steps:
       # personal access token as a key vault secret named pat
       az keyvault secret set 
         --name pat \
-        --vault-name $AZURE_KEYVAULT 
+        --vault-name $AZURE_KEYVAULT \
         --value $pat  
 
       #Add the catalog to your dev center  
