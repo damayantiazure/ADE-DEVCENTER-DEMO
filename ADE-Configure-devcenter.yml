@@ -26,6 +26,6 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       DEPLOYINGUSERID=$Principal_Id
-      DCNAME=$(az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/common.bicep -p nameseed=devbox devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
+      DCNAME=$(az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/common.bicep -p nameseed=devbox001 devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
       
       az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/devbox.bicep -p devcenterName=$DCNAME  
