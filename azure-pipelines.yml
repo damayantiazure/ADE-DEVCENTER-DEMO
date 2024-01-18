@@ -15,7 +15,7 @@ variables:
   AZURE_CATALOG: "dcc"
   AZURE_ADE_NAME: "dc-devbox003"
   ENVIRONMENT_TYPE: "Dev"
-  ENVIRONMENT_NAME: "devenv-$(ENVIRONMENT_TYPE)"
+  ENVIRONMENT_NAME: "devenv1-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "developers"
   Environment_Definition_Name: "AzureWebApp"
   AZURE_TENANT_ID: "835f6712-aeca-416a-8b76-d4dad8d12381"
