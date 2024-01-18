@@ -61,7 +61,7 @@ steps:
         --enable-rbac-authorization true
 
       # Give yourself the Key Vault Administrator role on the new key vault.      
-      AZURE_KEYVAULT_ID="/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$($AZURE_RESOURCE_GROUP)/providers/Microsoft.KeyVault/vaults/$(AZURE_KEYVAULT)"  
+      AZURE_KEYVAULT_ID="/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$(AZURE_RESOURCE_GROUP)/providers/Microsoft.KeyVault/vaults/$(AZURE_KEYVAULT)"  
       az role assignment create \
         --scope $AZURE_KEYVAULT_ID \
         --role "Key Vault Administrator" \
@@ -80,6 +80,14 @@ steps:
         --name pat \
         --vault-name $AZURE_KEYVAULT 
         --value $pat  
+
+      #Add the catalog to your dev center  
+      az devcenter admin catalog create \
+        --name Environments \
+        --resource-group $AZURE_RESOURCE_GROUP \
+        --dev-center $DCNAME\
+        --ado-git path="/Environments" branch="main" secret-identifier="https://$(AZURE_KEYVAULT).vault.azure.net/secrets/pat" uri="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo"   
+  
 
       #  If you need to give permissions to additional users
       # DEVUSER=user@contoso.com
