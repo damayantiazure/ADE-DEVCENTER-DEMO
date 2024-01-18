@@ -7,7 +7,7 @@ trigger:
 - master
 
 variables:  
-  AZURE_RESOURCE_GROUP: "dc-rg"
+  AZURE_RESOURCE_GROUP: "devcenter-rg"
   Principal_Id: "6e4c3017-00f7-440d-ac5c-695cf98dd060"
   
 
@@ -35,10 +35,10 @@ steps:
       az group create -n $RG -l westeurope
       
       #Deploy the common infrastructure
-      DCNAME=$(az deployment group create -g $RG -f ADE-Config/bicep/common.bicep -p nameseed=devbox002 devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
-      
+      #DCNAME=$(az deployment group create -g $RG -f ADE-Config/bicep/common.bicep -p nameseed=devbox002 devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
+      DCNAME='dc-devbox002'
       #Deploy Microsoft Dev Box Infrastructure
-      #az deployment group create -g $RG -f ADE-Config/bicep/devbox.bicep -p devcenterName=$DCNAME
+      az deployment group create -g $RG -f ADE-Config/bicep/devbox.bicep -p devcenterName=$DCNAME
       
       #Configure and Deploy Microsoft Dev Box Infrastructure
       #PAT="nupzp45oenzytelvjvo6aitucmwznqgtg2u7qu6hee6byd2ele7a"
