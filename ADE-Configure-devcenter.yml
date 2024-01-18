@@ -34,15 +34,15 @@ steps:
       
       
       #Create resource group
-      az group create -n $RG -l westeurope
+      az group create -n $AZURE_RESOURCE_GROUP -l westeurope
       
       #Deploy the common infrastructure
-      DCNAME=$(az deployment group create -g $RG -f ADE-Config/bicep/common.bicep -p nameseed=devbox004 devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
+      DCNAME=$(az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/common.bicep -p nameseed=devbox004 devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
       
           
       #Configure and Deploy Microsoft Dev Box Infrastructure      
       REPO='https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo'
-      az deployment group create -g $RG -f ADE-Config/bicep/ade.bicep -p devcenterName=$DCNAME catalogRepoUri=$REPO catalogRepoPat=$PAT adeProjectUser=$DEPLOYINGUSERID
+      az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/ade.bicep -p devcenterName=$DCNAME catalogRepoUri=$REPO catalogRepoPat=$PAT adeProjectUser=$DEPLOYINGUSERID
       
       # Assign ADE access on the subcription
       AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DCNAME --query [*].identity.principalId --out tsv)
@@ -86,7 +86,7 @@ steps:
       # DEVUSERID=$(az ad user show --id $DEVUSER --query id -o tsv)
       # SUBID=$(az account show --query id -o tsv)
       # PROJECTNAME=developers
-      # PROJECTID=/subscriptions/$SUBID/resourceGroups/$RG/providers/Microsoft.DevCenter/projects/$PROJECTNAME
+      # PROJECTID=/subscriptions/$SUBID/resourceGroups/$AZURE_RESOURCE_GROUP/providers/Microsoft.DevCenter/projects/$PROJECTNAME
 
       #Dev box
       # az role assignment create --assignee $DEVUSER --role "DevCenter Dev Box User" --scope $PROJECTID
