@@ -20,7 +20,7 @@ variables:
 
 steps:
 - task: AzureCLI@2
-  displayName: Vreate Key vault and assign RABAC
+  displayName: Create Key vault and assign RABAC
   inputs:
     azureSubscription: 'masterconnection'
     scriptType: 'bash'
