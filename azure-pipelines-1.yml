@@ -15,8 +15,9 @@ variables:
   
   AZURE_RESOURCE_GROUP: "dev-rg"
   LOCATION: "westeurope" 
-  AZURE_KEYVAULT: "devcenterkv63684123"
+  AZURE_KEYVAULT: "devcenterkv63084123"
   DCNAME: "dc-devbox020"
+  AZURE_SUBSCRIPTION_ID: "989f76fd-5edb-4aa1-b014-f989e1918adc"
 
 steps:
 - task: AzureCLI@2
@@ -33,8 +34,8 @@ steps:
       #DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
      
       DEPLOYINGUSERID='6e4c3017-00f7-440d-ac5c-695cf98dd060'
-      AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-      AZURE_KEYVAULT='devcenterkv63684'
+      # AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+      # AZURE_KEYVAULT='devcenterkv63684'
             
       # Assign ADE access on the subcription
       AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DCNAME --query [*].identity.principalId --out tsv)          
