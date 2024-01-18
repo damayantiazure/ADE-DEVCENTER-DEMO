@@ -38,13 +38,13 @@ module kvSecret 'keyvaultsecret.bicep' = if(!empty(catalogRepoPat)) {
   }
 }
 
-// module rbac 'devboxrbac.bicep' = {
-//   name: '${deployment().name}-managedId-rbac'
-//   params: {
-//     keyVaultName: kv.outputs.keyVaultName
-//     principalId: dc.identity.principalId
-//   }
-// }
+module rbac 'devboxrbac.bicep' = {
+  name: '${deployment().name}-managedId-rbac'
+  params: {
+    keyVaultName: kv.outputs.keyVaultName
+    principalId: dc.identity.principalId
+  }
+}
 
 resource env 'Microsoft.DevCenter/devcenters/environmentTypes@2023-04-01' = {
   name: environmentName
