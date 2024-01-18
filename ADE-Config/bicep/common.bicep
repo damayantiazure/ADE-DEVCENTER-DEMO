@@ -30,7 +30,7 @@ resource projectUserRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   name: guid(project.id, devboxProjectUser, devCenterDevBoxUserRoleId)
   properties: {
     roleDefinitionId: devCenterDevBoxUserRoleId
-    principalType: 'servicePrincipal'
+    principalType: 'ServicePrincipal'
     principalId: devboxProjectUser
   }
 }
@@ -42,7 +42,7 @@ resource projectAdminRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' =
   name: guid(project.id, devboxProjectAdmin, devCenterDevBoxAdminRoleId)
   properties: {
     roleDefinitionId: devCenterDevBoxAdminRoleId
-    principalType: 'servicePrincipal'
+    principalType: 'ServicePrincipal'
     principalId: devboxProjectAdmin
   }
 }

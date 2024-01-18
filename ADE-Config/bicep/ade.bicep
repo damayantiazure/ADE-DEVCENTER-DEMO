@@ -103,7 +103,7 @@ resource projectUserRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   name: guid(project.id, adeUserRoleId, adeProjectUser)
   properties: {
     roleDefinitionId: adeUserRoleId
-    principalType: 'servicePrincipal'
+    principalType: 'ServicePrincipal'
     principalId: adeProjectUser
   }
 }
