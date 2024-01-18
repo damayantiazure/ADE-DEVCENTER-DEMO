@@ -32,6 +32,7 @@ steps:
       #DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
       DEPLOYINGUSERID='6e4c3017-00f7-440d-ac5c-695cf98dd060'
       AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+      AZURE_KEYVAULT='kaevault${uniqueString(resourceGroup().id)}'
       
       
       #Create resource group
