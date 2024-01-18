@@ -81,7 +81,7 @@ steps:
         --vault-name $AZURE_KEYVAULT 
         --value $pat  
 
-
+      #  If you need to give permissions to additional users
       # DEVUSER=user@contoso.com
       # DEVUSERID=$(az ad user show --id $DEVUSER --query id -o tsv)
       # SUBID=$(az account show --query id -o tsv)
