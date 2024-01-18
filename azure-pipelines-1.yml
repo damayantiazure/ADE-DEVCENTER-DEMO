@@ -15,7 +15,7 @@ variables:
   
   AZURE_RESOURCE_GROUP: "dev-rg"
   LOCATION: "westeurope" 
-  AZURE_KEYVAULT: "devcenterkv63084123"
+  AZURE_KEYVAULT: "devcenterkv163084123"
   DCNAME: "dc-devbox020"
   AZURE_SUBSCRIPTION_ID: "989f76fd-5edb-4aa1-b014-f989e1918adc"
 
@@ -68,10 +68,8 @@ steps:
         --assignee-principal-type ServicePrincipal  
 
       # personal access token as a key vault secret named pat
-      az keyvault secret set 
-        --name pat \
-        --vault-name $AZURE_KEYVAULT \
-        --value $adopat  
+      az keyvault secret set --name pat --value $adopat --vault-name $AZURE_KEYVAULT
+      
 
       #Add the catalog to your dev center  
       az devcenter admin catalog create \
