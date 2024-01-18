@@ -10,10 +10,13 @@ pool:
 
 variables:
   #- group: ade-variables
+  AZURE_SUBSCRIPTION_ID: "989f76fd-5edb-4aa1-b014-f989e1918adc"
   AZURE_RESOURCE_GROUP: "adedemorg"
   AZURE_LOCATION: "westeurope"
   AZURE_CATALOG: "Catalog"
   AZURE_ADE_NAME: "dc-devbox003"
+  AZURE_KEYVAULT_ID: ""
+  
 
 stages:
 - stage: Create_Catalog
@@ -27,6 +30,25 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'az extension add --name devcenter --upgrade'
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'masterconnection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $AZURE_ADE_NAME --query [*].identity.principalId --out tsv)
+          
+          az role assignment create \
+            --scope /subscriptions/$AZURE_SUBSCRIPTION_ID \
+            --role Owner \
+            --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
+            --assignee-principal-type ServicePrincipal
+
+          # az role assignment create \
+          #   --scope $AZURE_KEYVAULT_ID \
+          #   --role "Key Vault Secrets User" \
+          #   --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
+          #   --assignee-principal-type ServicePrincipal  
     - task: AzureCLI@2
       displayName: Create a catalog
       inputs:
