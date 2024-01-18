@@ -29,6 +29,8 @@ steps:
       #Get the deploying users id for RBAC assignments
       #DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
       DEPLOYINGUSERID='6e4c3017-00f7-440d-ac5c-695cf98dd060'
+      AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+      
       
       #Create resource group
       az group create -n $RG -l westeurope
