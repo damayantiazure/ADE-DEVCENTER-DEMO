@@ -13,9 +13,9 @@ variables:
   AZURE_SUBSCRIPTION_ID: "989f76fd-5edb-4aa1-b014-f989e1918adc"
   AZURE_RESOURCE_GROUP: "adedemorg"
   AZURE_LOCATION: "westeurope"
-  AZURE_CATALOG: "Catalog"
+  AZURE_CATALOG: "Catalog1"
   AZURE_ADE_NAME: "dc-devbox003"
-  AZURE_KEYVAULT_ID: ""
+  
   
 
 stages:
