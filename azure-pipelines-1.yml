@@ -6,9 +6,6 @@
 trigger:
 - master
 
-variables:  
-  - group: ade-variables
-  - group: adekays
  
 
 pool:
@@ -29,9 +26,10 @@ steps:
       
       #Get the deploying users id for RBAC assignments
       #DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
+      AZURE_RESOURCE_GROUP:'dev-rg'
       DEPLOYINGUSERID='6e4c3017-00f7-440d-ac5c-695cf98dd060'
       AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-      AZURE_KEYVAULT='devcenterkv633788'
+      AZURE_KEYVAULT='devcenterkv63684'
       DCNAME='dc-devbox020'
       
       # Assign ADE access on the subcription
