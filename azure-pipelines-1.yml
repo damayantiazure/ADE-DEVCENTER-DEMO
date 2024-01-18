@@ -15,7 +15,7 @@ steps:
 
 
 - task: AzureCLI@2
-  displayName: Configure Dev Center and its components
+  displayName: Vreate Key vault and assign RABAC
   inputs:
     azureSubscription: 'masterconnection'
     scriptType: 'bash'
