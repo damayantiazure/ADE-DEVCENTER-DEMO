@@ -12,7 +12,7 @@ variables:
   #- group: ade-variables
   AZURE_RESOURCE_GROUP: "devcenter-ade-rg"
   AZURE_LOCATION: "westeurope"
-  AZURE_CATALOG: "abncatalog"
+  AZURE_CATALOG: "dcc"
   AZURE_ADE_NAME: "dc-devbox003"
   ENVIRONMENT_TYPE: "Dev"
   ENVIRONMENT_NAME: "devenv-$(ENVIRONMENT_TYPE)"
