@@ -15,7 +15,7 @@ variables:
   
   AZURE_RESOURCE_GROUP: "dev-rg"
   LOCATION: "westeurope" 
-  AZURE_KEYVAULT: "devcenterkv63684"
+  AZURE_KEYVAULT: "devcenterkv63684123"
   DCNAME: "dc-devbox020"
 
 steps:
