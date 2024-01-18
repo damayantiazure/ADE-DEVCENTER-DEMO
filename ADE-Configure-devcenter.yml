@@ -23,7 +23,7 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       
-      adopat='tayuxqjfutu7fbv36isg3saohqhlvu6joxrbuco3wwemjwzwxqua'
+      # adopat='tayuxqjfutu7fbv36isg3saohqhlvu6joxrbuco3wwemjwzwxqua'
       
       #Get the deploying users id for RBAC assignments
       #DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
@@ -39,7 +39,7 @@ steps:
           
       #Configure and Deploy Microsoft Dev Box Infrastructure      
       # REPO='https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo'
-      # az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/ade.bicep -p devcenterName=$DCNAME catalogRepoUri=$REPO catalogRepoPat=$adopat adeProjectUser=$DEPLOYINGUSERID
+      # az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/ade.bicep -p devcenterName=$DCNAME catalogRepoUri=$REPO catalogRepoPat=$pat adeProjectUser=$DEPLOYINGUSERID
       
       # Assign ADE access on the subcription
       AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DCNAME --query [*].identity.principalId --out tsv)
@@ -73,7 +73,7 @@ steps:
         --assignee-principal-type ServicePrincipal  
 
       # personal access token as a key vault secret named pat      
-      az keyvault secret set --name pat --value $adopat --vault-name $AZURE_KEYVAULT      
+      az keyvault secret set --name pat --value $pat --vault-name $AZURE_KEYVAULT      
 
       #Add the catalog to your dev center  
       az devcenter admin catalog create \
