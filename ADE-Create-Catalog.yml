@@ -12,10 +12,8 @@ variables:
   #- group: ade-variables
   AZURE_RESOURCE_GROUP: "adedemorg"
   AZURE_LOCATION: "westeurope"
-  AZURE_CATALOG: "CentralCatalog"
+  AZURE_CATALOG: "Catalog"
   AZURE_ADE_NAME: "dc-devbox003"
-  ADO_PAT: "https://abndevcenterkeyvault.vault.azure.net/secrets/adopat"
-  REPO: "https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo"
 
 stages:
 - stage: Create_Catalog
