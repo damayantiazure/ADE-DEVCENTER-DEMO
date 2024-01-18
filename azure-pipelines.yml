@@ -10,15 +10,14 @@ pool:
 
 variables:
   #- group: ade-variables
-  AZURE_RESOURCE_GROUP: "devcenter-ade-rg"
+  AZURE_RESOURCE_GROUP: "devbox-rg"
   AZURE_LOCATION: "westeurope"
   AZURE_CATALOG: "dcc"
-  AZURE_ADE_NAME: "dc-devbox003"
+  AZURE_ADE_NAME: "dc-devbox004"
   ENVIRONMENT_TYPE: "Dev"
   ENVIRONMENT_NAME: "devenv1-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "developers"
-  Environment_Definition_Name: "AzureWebApp"
-  AZURE_TENANT_ID: "835f6712-aeca-416a-8b76-d4dad8d12381"
+  Environment_Definition_Name: "StaticWebApp"
   
 
 stages:
@@ -56,6 +55,7 @@ stages:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
+          AZURE_TENANT_ID=$(az account show --query tenantId --output tsv)
           environment_rg=$(az devcenter dev environment show --name $(ENVIRONMENT_NAME) \
              --dev-center $(AZURE_ADE_NAME) --project $(AZURE_PROJECT) \
              --only-show-errors --query resourceGroupId --output tsv 2>&1)
