@@ -18,10 +18,10 @@ variables:
   ENVIRONMENT_NAME: "project-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "developers"
   Environment_Definition_Name: "AzureStaticWebsite"
-  uamiName: "devstaticwebappuami"
-  vnetName: "vnetdevstaticweb"
-  storageAccountName: "devstaticwebstoarge2367"
-  appGatewayName: "devstaticwebappgateway"
+  # uamiName: "devstaticwebappuami"
+  # vnetName: "vnetdevstaticweb"
+  # storageAccountName: "devstaticwebstoarge2367"
+  # appGatewayName: "devstaticwebappgateway"
 # parameters:
 #   - name: uamiName
 #     type: string
@@ -67,8 +67,7 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           az devcenter dev environment create --dev-center-name $(AZURE_ADE_NAME) --environment-name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) --project $(AZURE_PROJECT) \
-           --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) -p uamiName=$uamiName -p vnetName=$vnetName -p storageAccountName=$storageAccountName -p appGatewayName=$appGatewayName
-
+           --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) 
            
     - task: AzureCLI@2
       displayName: View Environment Details
