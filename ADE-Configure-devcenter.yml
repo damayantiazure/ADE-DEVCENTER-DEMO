@@ -9,8 +9,8 @@ trigger:
 variables:  
   #- group: ade-variables  
   LOCATION: "westeurope"
-  AZURE_RESOURCE_GROUP: "ade-rg13"
-  AZURE_DEVCENTER: "devbox0013"
+  AZURE_RESOURCE_GROUP: "ade-rg14"
+  AZURE_DEVCENTER: "devbox0014"
   AZURE_PROJECT: ""
   AZURE_KEYVAULT: "pocmasterkeysvault1610"
   CATALOG_REPO: 'https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ADE-CATALOG'
