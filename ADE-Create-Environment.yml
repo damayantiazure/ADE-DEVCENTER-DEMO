@@ -10,14 +10,14 @@ pool:
 
 variables:
   #- group: ade-variables
-  AZURE_RESOURCE_GROUP: "devbox-rg"
+  AZURE_RESOURCE_GROUP: "ade-rg14"
   AZURE_LOCATION: "westeurope"
   AZURE_CATALOG: "dcc"
-  AZURE_ADE_NAME: "dc-devbox004"
+  AZURE_ADE_NAME: "dc-devbox0014"
   ENVIRONMENT_TYPE: "Dev"
-  ENVIRONMENT_NAME: "devenv1-$(ENVIRONMENT_TYPE)"
+  ENVIRONMENT_NAME: "project-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "developers"
-  Environment_Definition_Name: "StaticWebApp"
+  Environment_Definition_Name: "AzureStaticWebsite"
   
 
 stages:
