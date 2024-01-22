@@ -47,8 +47,9 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           az devcenter dev environment create --dev-center-name $(AZURE_ADE_NAME) --environment-name $(ENVIRONMENT_NAME) --environment-type $(ENVIRONMENT_TYPE) --project $(AZURE_PROJECT) \
-           --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name) --uamiName devcenteruami --vnetName vnetdevcenter12 --storageAccountName srtdevcenter1276 --appGatewayName appgatewaydevenv
-        #arguments: '--uamiName devcenteruami --vnetName vnetdevcenter12 --storageAccountName srtdevcenter1276 --appGatewayName appgatewaydevenv'
+           --catalog-name $(AZURE_CATALOG) --environment-definition-name $(Environment_Definition_Name)
+        arguments: --uamiName 'devcenteruami' --vnetName 'vnetdevcenter12' --storageAccountName 'srtdevcenter1276' --appGatewayName 'appgatewaydevenv'
+           
     - task: AzureCLI@2
       displayName: View Environment Details
       inputs:
