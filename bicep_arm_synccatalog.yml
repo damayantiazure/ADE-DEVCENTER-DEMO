@@ -23,9 +23,9 @@ variables:
   AZURE_ADE_NAME: "dc-devbox0014"
 
 stages:
-- stage: GenerateARM_Sync_Catalog 
+- stage: SyncCatalog
   jobs:
-  - job: GenerateARM_Sync_Catalog 
+  - job: SyncCatalog
       
     steps:
     - task: PythonScript@0
