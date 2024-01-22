@@ -19,7 +19,7 @@ variables:
   #- group: ade-variables
   AZURE_RESOURCE_GROUP: "ade-rg14"
   AZURE_LOCATION: "westeurope"
-  AZURE_ADE_CATALOG_NAME: "dcc"
+  AZURE_ADE_CATALOG_NAME: "COE-Caatalog"
   AZURE_ADE_NAME: "dc-devbox0014"
 
 stages:
