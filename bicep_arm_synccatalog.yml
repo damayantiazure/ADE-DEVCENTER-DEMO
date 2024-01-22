@@ -25,7 +25,7 @@ variables:
 stages:
 - stage: SyncCatalog
   jobs:
-  - job: SyncCatalog
+  - job: Generate_ARM
       
     steps:
     - task: PythonScript@0
@@ -60,7 +60,7 @@ stages:
           print('Generated ARM templates')
 
   - job: committorepo
-    dependsOn: GenerateARM    
+    dependsOn: Generate_ARM    
     steps:
              
     - task: Bash@3
