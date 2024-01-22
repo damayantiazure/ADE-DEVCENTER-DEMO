@@ -1,0 +1,55 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+   include:
+     - master  
+
+pool:
+  vmImage: ubuntu-latest  
+
+variables:
+  #- group: ade-variables
+  AZURE_RESOURCE_GROUP: "my-dev-center-rg"
+  AZURE_LOCATION: "westeurope"
+  AZURE_CATALOG: "CentralCatalog"
+  AZURE_DEVCENTER: "abndevcenter-dev-center"
+  ENVIRONMENT_TYPE: "Dev"
+  ENVIRONMENT_NAME: "abnfrontend-$(ENVIRONMENT_TYPE)"
+  AZURE_PROJECT: "projectfrontend"
+  Environment_Definition_Name: "AzureWebApp"
+  AZURE_TENANT_ID: "835f6712-aeca-416a-8b76-d4dad8d12381"
+  
+
+stages:
+- stage: DeleteEnvironment
+  jobs:
+  - job: delete_env  
+      
+    steps:
+    
+    # Update devcenter extension
+    - task: Bash@3
+      displayName: Install DevCenter CLI Extension
+      inputs:
+        targetType: 'inline'
+        script: 'az extension add --name devcenter --upgrade'
+    
+    - task: AzureCLI@2
+      displayName: Delete Environment
+      inputs:
+        azureSubscription: 'masterconnection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az devcenter dev environment delete --name $(ENVIRONMENT_NAME) \
+              --dev-center $(AZURE_DEVCENTER) --project $(AZURE_PROJECT) --yes
+            
