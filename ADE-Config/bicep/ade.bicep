@@ -4,7 +4,7 @@ param devcenterName string = 'devcenterdemo'
 param environmentName string = 'sandbox'
 param projectTeamName string = 'developers'
 param catalogName string = 'dcc'
-param catalogRepoUri string = 'https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo'
+param catalogRepoUri string = 'https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ADE-CATALOG'
 param adeProjectUser string = ''
 
 @secure()
@@ -59,7 +59,7 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2023-04-01' = {
       uri: catalogRepoUri
       branch: 'main'
       secretIdentifier: !empty(catalogRepoPat) ? kvSecret.outputs.secretUri : null
-      path: '/Environments'
+      path: '/infrastructure-templates'
     }
   }
 }
