@@ -7,89 +7,56 @@ trigger:
 - master
 
 variables:  
-  - group: ade-variables
-  - group: adekays
- 
-
+  #- group: ade-variables  
+  LOCATION: "westeurope"
+  AZURE_RESOURCE_GROUP: "ade-rg9"
+  AZURE_DEVCENTER: "devbox009"
+  AZURE_PROJECT: ""
+  AZURE_KEYVAULT: "pocmasterkeysvault1610"
+  CATALOG_REPO: 'https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ADE-CATALOG'
+  
 pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'masterconnection'
+    KeyVaultName: 'pocmasterkeysvault1610'
+    SecretsFilter: 'adopat'
+    RunAsPreJob: true
 - task: AzureCLI@2
   displayName: Configure Dev Center and its components
   inputs:
     azureSubscription: 'masterconnection'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: |
+    inlineScript: |    
       
-      adopat='tayuxqjfutu7fbv36isg3saohqhlvu6joxrbuco3wwemjwzwxqua'
       
       #Get the deploying users id for RBAC assignments
       #DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
-      DEPLOYINGUSERID='6e4c3017-00f7-440d-ac5c-695cf98dd060'
-      AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-      
+      #DEPLOYINGUSERID='0afc90a4-ea9c-422b-bace-b313bf20953b'
+      SERVICE_PRINCIPAL_ID=$(az account show --query user.name -o tsv)
+      DEPLOYINGUSERID=$(az ad sp show --id $SERVICE_PRINCIPAL_ID  --query id -o tsv)
+      AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+            
       #Create resource group
-      az group create -n $AZURE_RESOURCE_GROUP -l $LOCATION
+      az group create -n $AZURE_RESOURCE_GROUP -l westeurope
       
       #Deploy the common infrastructure
-      DCNAME=$(az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/common.bicep -p nameseed=devbox020 devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)
+      DEVCENTERNAME=$(az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/common.bicep -p nameseed=$AZURE_DEVCENTER devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)           
       
-          
-      #Configure and Deploy Microsoft Dev Box Infrastructure      
-      REPO='https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo'
-      az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/ade.bicep -p devcenterName=$DCNAME catalogRepoUri=$REPO catalogRepoPat=$adopat adeProjectUser=$DEPLOYINGUSERID
+      #Configure and Deploy Microsoft Dev Box Infrastructure            
+      az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/ade.bicep -p devcenterName=$DEVCENTERNAME catalogRepoUri=$CATALOG_REPO catalogRepoPat=$adopat adeProjectUser=$DEPLOYINGUSERID
       
-      # Assign ADE access on the subcription
-      AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DCNAME --query [*].identity.principalId --out tsv)
-          
+      # ADD Dev center as owner in the subscription
+      AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DEVCENTERNAME --query [*].identity.principalId --out tsv)      
+
       az role assignment create \
         --scope /subscriptions/$AZURE_SUBSCRIPTION_ID \
         --role Owner \
         --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
-        --assignee-principal-type ServicePrincipal
-
-      # create a new key vault. You use this key vault later to save a personal access token from Devops/github.
-      az keyvault create \
-        --name $AZURE_KEYVAULT \
-        --resource-group $AZURE_RESOURCE_GROUP \
-        --location $LOCATION \
-        --enable-rbac-authorization true
-
-      # Give yourself the Key Vault Administrator role on the new key vault.      
-      AZURE_KEYVAULT_ID="/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$(AZURE_RESOURCE_GROUP)/providers/Microsoft.KeyVault/vaults/$(AZURE_KEYVAULT)"  
-      az role assignment create \
-        --scope $AZURE_KEYVAULT_ID \
-        --role "Key Vault Administrator" \
-        --assignee-object-id $DEPLOYINGUSERID \
-        --assignee-principal-type ServicePrincipal
-
-      # Assign the dev center's identity the role of Key Vault Secrets User.  
-      az role assignment create \
-        --scope $AZURE_KEYVAULT_ID \
-        --role "Key Vault Secrets User" \
-        --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
-        --assignee-principal-type ServicePrincipal  
-
-      # personal access token as a key vault secret named pat      
-      echo $pat
-      az keyvault secret set --name pat --value $adopat --vault-name $AZURE_KEYVAULT      
-
-      #Add the catalog to your dev center  
-      az devcenter admin catalog create \
-        --name Environments123 \
-        --resource-group $AZURE_RESOURCE_GROUP \
-        --dev-center $DCNAME\
-        --ado-git path="/Environments" branch="main" secret-identifier="https://$(AZURE_KEYVAULT).vault.azure.net/secrets/pat" uri="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo"   
-  
-
-      #  If you need to give permissions to additional users
-      # DEVUSER=user@contoso.com
-      # DEVUSERID=$(az ad user show --id $DEVUSER --query id -o tsv)
-      # SUBID=$(az account show --query id -o tsv)
-      # PROJECTNAME=developers
-      # PROJECTID=/subscriptions/$SUBID/resourceGroups/$AZURE_RESOURCE_GROUP/providers/Microsoft.DevCenter/projects/$PROJECTNAME
-
-      #Dev box
-      # az role assignment create --assignee $DEVUSER --role "DevCenter Dev Box User" --scope $PROJECTID
+        --assignee-principal-type ServicePrincipal      
+  env:
+    adopat: $(adopat)    
