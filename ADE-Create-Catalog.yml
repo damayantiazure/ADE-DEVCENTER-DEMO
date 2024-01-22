@@ -33,44 +33,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'az extension add --name devcenter --upgrade'
-    - task: AzureCLI@2
-      displayName: Configure Dev Center and its components
-      inputs:
-        azureSubscription: 'masterconnection'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-      
-          AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-          AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DEVCENTERNAME --query [*].identity.principalId --out tsv)
-
-          az role assignment create \
-            --scope /subscriptions/$AZURE_SUBSCRIPTION_ID \
-            --role Owner \
-            --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
-            --assignee-principal-type ServicePrincipal     
-    # - task: AzureCLI@2
-    #   displayName: Give access for the ADE on Subscription
-    #   inputs:
-    #     azureSubscription: 'masterconnection'
-    #     scriptType: 'bash'
-    #     scriptLocation: 'inlineScript'
-    #     inlineScript: |
-    #       AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-    #       AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $AZURE_ADE_NAME --query [*].identity.principalId --out tsv)
-    #       AZURE_KEYVAULT_ID="/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$(AZURE_RESOURCE_GROUP)/providers/Microsoft.KeyVault/vaults/$(Azure_KEYVAULT)"
-          
-    #       # az role assignment create \
-    #       #   --scope /subscriptions/$(AZURE_SUBSCRIPTION_ID) \
-    #       #   --role Owner \
-    #       #   --assignee-object-id $(AZURE_DEVCENTER_PRINCIPAL_ID) \
-    #       #   --assignee-principal-type ServicePrincipal
-
-    #       # az role assignment create \
-    #       #   --scope $(AZURE_KEYVAULT_ID) \
-    #       #   --role "Key Vault Secrets User" \
-    #       #   --assignee-object-id $(AZURE_DEVCENTER_PRINCIPAL_ID) \
-    #       #   --assignee-principal-type ServicePrincipal  
+    
     - task: AzureCLI@2
       displayName: Create Dev Center catalog
       inputs:
