@@ -17,7 +17,8 @@ variables:
   LOCATION: "westeurope" 
   AZURE_KEYVAULT: "devcenterkv163084123"
   DCNAME: "dc-devbox020"
-  AZURE_SUBSCRIPTION_ID: "989f76fd-5edb-4aa1-b014-f989e1918adc"
+  AZURE_SUBSCRIPTION_ID: ""
+  REPO: "https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo"
 
 steps:
 - task: AzureCLI@2
@@ -26,16 +27,14 @@ steps:
     azureSubscription: 'masterconnection'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: |
+    inlineScript: |    
       
-      adopat='tayuxqjfutu7fbv36isg3saohqhlvu6joxrbuco3wwemjwzwxqua'
       
       #Get the deploying users id for RBAC assignments
       #DEPLOYINGUSERID=$(az ad signed-in-user show --query id -o tsv)
      
       DEPLOYINGUSERID='6e4c3017-00f7-440d-ac5c-695cf98dd060'
-      # AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-      # AZURE_KEYVAULT='devcenterkv63684'
+      AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)      
             
       # Assign ADE access on the subcription
       AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $DCNAME --query [*].identity.principalId --out tsv)          
@@ -76,15 +75,5 @@ steps:
         --name Environments \
         --resource-group $AZURE_RESOURCE_GROUP \
         --dev-center $DCNAME\
-        --ado-git path="/Environments" branch="main" secret-identifier="https://$(AZURE_KEYVAULT).vault.azure.net/secrets/pat" uri="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo"   
+        --ado-git path="/Environments" branch="main" secret-identifier="https://$(AZURE_KEYVAULT).vault.azure.net/secrets/pat" uri=$REPO   
   
-
-      #  If you need to give permissions to additional users
-      # DEVUSER=user@contoso.com
-      # DEVUSERID=$(az ad user show --id $DEVUSER --query id -o tsv)
-      # SUBID=$(az account show --query id -o tsv)
-      # PROJECTNAME=developers
-      # PROJECTID=/subscriptions/$SUBID/resourceGroups/$AZURE_RESOURCE_GROUP/providers/Microsoft.DevCenter/projects/$PROJECTNAME
-
-      #Dev box
-      # az role assignment create --assignee $DEVUSER --role "DevCenter Dev Box User" --scope $PROJECTID
