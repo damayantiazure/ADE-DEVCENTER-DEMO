@@ -9,8 +9,8 @@ trigger:
 variables:  
   #- group: ade-variables  
   LOCATION: "westeurope"
-  AZURE_RESOURCE_GROUP: "ade-rg10"
-  AZURE_DEVCENTER: "devbox0010"
+  AZURE_RESOURCE_GROUP: "ade-rg11"
+  AZURE_DEVCENTER: "devbox0011"
   AZURE_PROJECT: ""
   AZURE_KEYVAULT: "pocmasterkeysvault1610"
   CATALOG_REPO: 'https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ADE-CATALOG'
@@ -45,8 +45,8 @@ steps:
       az group create -n $AZURE_RESOURCE_GROUP -l westeurope
       
       #Deploy the common infrastructure
-      #DEVCENTERNAME=$(az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/common.bicep -p nameseed=$AZURE_DEVCENTER devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)           
-      DEVCENTERNAME='dc-devbox0010'
+      DEVCENTERNAME=$(az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/common.bicep -p nameseed=$AZURE_DEVCENTER devboxProjectUser=$DEPLOYINGUSERID --query 'properties.outputs.devcenterName.value' -o tsv)           
+      
       #Configure and Deploy Microsoft Dev Box Infrastructure            
       az deployment group create -g $AZURE_RESOURCE_GROUP -f ADE-Config/bicep/ade.bicep -p devcenterName=$DEVCENTERNAME catalogRepoUri=$CATALOG_REPO catalogRepoPat=$adopat adeProjectUser=$DEPLOYINGUSERID
       
