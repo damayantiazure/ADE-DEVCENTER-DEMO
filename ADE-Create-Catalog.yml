@@ -13,11 +13,12 @@ variables:
  
   AZURE_RESOURCE_GROUP: "ade-rg14"
   AZURE_LOCATION: "westeurope"
-  AZURE_CATALOG: "Catalog-Staticweb"
+  AZURE_CATALOG: "Catalog-Staticwebapp"
   AZURE_ADE_NAME: "dc-devbox0014"
   Azure_KEYVAULT: "kv-dboxjom74ygdqtcra"
   REPO: "https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ADE-CATALOG"
   ENVIRONMENT_DEFINITION_PATH: "/infrastructure-templates"
+  BRANCH_NAME: "master"
   
   
 
@@ -40,4 +41,4 @@ stages:
         azureSubscription: 'masterconnection'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: 'az devcenter admin catalog create --ado-git path=$ENVIRONMENT_DEFINITION_PATH branch="main" secret-identifier="https://$(Azure_KEYVAULT).vault.azure.net/secrets/dcc" uri=$REPO --name $(AZURE_CATALOG) --dev-center-name $(AZURE_ADE_NAME) --resource-group $(AZURE_RESOURCE_GROUP)'
+        inlineScript: 'az devcenter admin catalog create --ado-git path=$ENVIRONMENT_DEFINITION_PATH branch=$BRANCH_NAME secret-identifier="https://$(Azure_KEYVAULT).vault.azure.net/secrets/dcc" uri=$REPO --name $(AZURE_CATALOG) --dev-center-name $(AZURE_ADE_NAME) --resource-group $(AZURE_RESOURCE_GROUP)'
