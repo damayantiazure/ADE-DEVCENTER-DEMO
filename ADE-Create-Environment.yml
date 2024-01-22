@@ -15,30 +15,14 @@ variables:
   AZURE_CATALOG: "dcc"
   AZURE_ADE_NAME: "dc-devbox0014"
   ENVIRONMENT_TYPE: "Dev"
-  ENVIRONMENT_NAME: "project-$(ENVIRONMENT_TYPE)"
+  ENVIRONMENT_NAME: "staticweb-$(ENVIRONMENT_TYPE)"
   AZURE_PROJECT: "developers"
   Environment_Definition_Name: "AzureStaticWebsite"
   # uamiName: "devstaticwebappuami"
   # vnetName: "vnetdevstaticweb"
   # storageAccountName: "devstaticwebstoarge2367"
   # appGatewayName: "devstaticwebappgateway"
-# parameters:
-#   - name: uamiName
-#     type: string
-#     displayName: "User Managed Identity Name"
-#     default: "devstaticwebappuami" 
-#   - name: vnetName
-#     type: string
-#     displayName: "VNet Name"
-#     default: "vnetdevstaticweb" 
-#   - name: storageAccountName
-#     type: string
-#     displayName: "Storage Account Name"
-#     default: "devstaticwebstoarge2367"    
-#   - name: appGatewayName
-#     type: string
-#     displayName: "Application Gateway Name"
-#     default: "devstaticwebappgateway"      
+
 
 stages:
 - stage: Create_Environment
