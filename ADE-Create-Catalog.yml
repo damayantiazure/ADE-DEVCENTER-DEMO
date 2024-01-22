@@ -42,6 +42,7 @@ stages:
         inlineScript: |
           AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
           AZURE_DEVCENTER_PRINCIPAL_ID=$(az resource list -n $AZURE_ADE_NAME --query [*].identity.principalId --out tsv)
+          AZURE_KEYVAULT_ID="/subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZURE_RESOURCE_GROUP/providers/Microsoft.KeyVault/vaults/$Azure_KEYVAULT"
           
           az role assignment create \
             --scope /subscriptions/$AZURE_SUBSCRIPTION_ID \
