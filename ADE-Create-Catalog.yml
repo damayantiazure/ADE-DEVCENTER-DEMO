@@ -11,10 +11,13 @@ pool:
 variables:
   #- group: ade-variables
  
-  AZURE_RESOURCE_GROUP: "adedemorg"
+  AZURE_RESOURCE_GROUP: "ade-rg14"
   AZURE_LOCATION: "westeurope"
-  AZURE_CATALOG: "Catalog1"
-  AZURE_ADE_NAME: "dc-devbox003"
+  AZURE_CATALOG: "Catalog-Staticweb"
+  AZURE_ADE_NAME: "dc-devbox0014"
+  Azure_KEYVAULT: "kv-dboxjom74ygdqtcra"
+  REPO: "https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ADE-CATALOG"
+  ENVIRONMENT_DEFINITION_PATH: "/infrastructure-templates"
   
   
 
@@ -46,15 +49,15 @@ stages:
             --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
             --assignee-principal-type ServicePrincipal
 
-          # az role assignment create \
-          #   --scope $AZURE_KEYVAULT_ID \
-          #   --role "Key Vault Secrets User" \
-          #   --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
-          #   --assignee-principal-type ServicePrincipal  
+          az role assignment create \
+            --scope $AZURE_KEYVAULT_ID \
+            --role "Key Vault Secrets User" \
+            --assignee-object-id $AZURE_DEVCENTER_PRINCIPAL_ID \
+            --assignee-principal-type ServicePrincipal  
     - task: AzureCLI@2
-      displayName: Create a catalog
+      displayName: Create Dev Center catalog
       inputs:
         azureSubscription: 'masterconnection'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: 'az devcenter admin catalog create --ado-git path="/Environments" branch="main" secret-identifier="https://abndevcenterkeyvault.vault.azure.net/secrets/adopat" uri="https://dev.azure.com/damayantibhuyan/customerPOCs/_git/ade-demo" --name $(AZURE_CATALOG) --dev-center-name $(AZURE_ADE_NAME) --resource-group $(AZURE_RESOURCE_GROUP)'
+        inlineScript: 'az devcenter admin catalog create --ado-git path=$ENVIRONMENT_DEFINITION_PATH branch="main" secret-identifier="https://$(Azure_KEYVAULT).vault.azure.net/secrets/dcc" uri=$REPO --name $(AZURE_CATALOG) --dev-center-name $(AZURE_ADE_NAME) --resource-group $(AZURE_RESOURCE_GROUP)'
