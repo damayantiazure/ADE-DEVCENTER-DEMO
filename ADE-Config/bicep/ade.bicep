@@ -57,7 +57,7 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2023-04-01' = {
   properties: {
     adoGit: {
       uri: catalogRepoUri
-      branch: 'main'
+      branch: 'master'
       secretIdentifier: !empty(catalogRepoPat) ? kvSecret.outputs.secretUri : null
       path: '/infrastructure-templates'
     }
